@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>B站源码阅读-api | mini-bilibili</title>
+    <meta name="description" content="低仿B站">
+    <meta name="generator" content="VuePress 1.4.0">
+    
+    
+    <link rel="preload" href="/assets/css/0.styles.dcd73214.css" as="style"><link rel="preload" href="/assets/js/app.90430322.js" as="script"><link rel="preload" href="/assets/js/2.1d78d93b.js" as="script"><link rel="preload" href="/assets/js/6.b39537c4.js" as="script"><link rel="prefetch" href="/assets/js/10.fdd73572.js"><link rel="prefetch" href="/assets/js/3.0cfbad14.js"><link rel="prefetch" href="/assets/js/4.7a4d83b2.js"><link rel="prefetch" href="/assets/js/5.954045cc.js"><link rel="prefetch" href="/assets/js/7.170b57b7.js"><link rel="prefetch" href="/assets/js/8.832b17ef.js"><link rel="prefetch" href="/assets/js/9.30f76b7c.js">
+    <link rel="stylesheet" href="/assets/css/0.styles.dcd73214.css">
+  </head>
+  <body>
+    <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/" class="home-link router-link-active"><!----> <span class="site-name">mini-bilibili</span></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link">
+  指南
+</a></div><div class="nav-item"><a href="https://google.com" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Google
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="go-common Menu" class="dropdown-title"><span class="title">B站源码阅读</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/authSvc-User.html" class="nav-link">
+  用户认证中间件
+</a></li><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/api.html" class="nav-link">
+  api
+</a></li><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/model.html" class="nav-link">
+  model
+</a></li></ul></div></div> <!----></nav></div></header> <div class="sidebar-mask"></div> <aside class="sidebar"><nav class="nav-links"><div class="nav-item"><a href="/" class="nav-link">
+  主页
+</a></div><div class="nav-item"><a href="/guide/" class="nav-link">
+  指南
+</a></div><div class="nav-item"><a href="https://google.com" target="_blank" rel="noopener noreferrer" class="nav-link external">
+  Google
+  <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" x="0px" y="0px" viewBox="0 0 100 100" width="15" height="15" class="icon outbound"><path fill="currentColor" d="M18.8,85.1h56l0,0c2.2,0,4-1.8,4-4v-32h-8v28h-48v-48h28v-8h-32l0,0c-2.2,0-4,1.8-4,4v56C14.8,83.3,16.6,85.1,18.8,85.1z"></path> <polygon fill="currentColor" points="45.7,48.7 51.3,54.3 77.2,28.5 77.2,37.2 85.2,37.2 85.2,14.9 62.8,14.9 62.8,22.9 71.5,22.9"></polygon></svg></a></div><div class="nav-item"><div class="dropdown-wrapper"><button type="button" aria-label="go-common Menu" class="dropdown-title"><span class="title">B站源码阅读</span> <span class="arrow right"></span></button> <ul class="nav-dropdown" style="display:none;"><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/authSvc-User.html" class="nav-link">
+  用户认证中间件
+</a></li><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/api.html" class="nav-link">
+  api
+</a></li><li class="dropdown-item"><!----> <a href="/source/post/B站源码阅读/model.html" class="nav-link">
+  model
+</a></li></ul></div></div> <!----></nav>  <ul class="sidebar-links"><li><section class="sidebar-group depth-0"><p class="sidebar-heading open"><span>B站源码阅读-api</span> <!----></p> <ul class="sidebar-links sidebar-group-items"><li><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#基本信息" class="sidebar-link">基本信息</a><ul class="sidebar-sub-headers"></ul></li><li><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#弹幕" class="sidebar-link">弹幕</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#获取弹幕" class="sidebar-link">获取弹幕</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#发送弹幕" class="sidebar-link">发送弹幕</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#举报弹幕" class="sidebar-link">举报弹幕</a></li></ul></li><li><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#关注与粉丝" class="sidebar-link">关注与粉丝</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#粉丝列表" class="sidebar-link">粉丝列表</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#我的关注" class="sidebar-link">我的关注</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#关注别人" class="sidebar-link">关注别人</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#关注时加入默认分组" class="sidebar-link">关注时加入默认分组</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#取消关注" class="sidebar-link">取消关注</a></li></ul></li><li><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#动态" class="sidebar-link">动态</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#全部动态" class="sidebar-link">全部动态</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#发表动态" class="sidebar-link">发表动态</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#点赞动态" class="sidebar-link">点赞动态</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#回复动态" class="sidebar-link">回复动态</a></li><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#删除动态" class="sidebar-link">删除动态</a></li></ul></li><li><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#模板" class="sidebar-link">模板</a><ul class="sidebar-sub-headers"><li class="sidebar-sub-header"><a href="/source/post/B%E7%AB%99%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/api.html#模板-2" class="sidebar-link">模板</a></li></ul></li></ul></section></li></ul> </aside> <main class="page"> <div class="theme-default-content content__default"><div class="custom-block tip"><p class="custom-block-title">TIP</p> <p>这个文档是对B站源码api的归纳整理，随着时间的推移可能和最新代码有出入...<br>
+源码日期：2019年4月<br>
+整理日期：2020年4月起</p></div> <p>[TOC]</p> <h2 id="基本信息"><a href="#基本信息" class="header-anchor">#</a> 基本信息</h2> <ul><li>mid：用户id</li> <li>cid：chatid</li> <li>oid：我看接口里的值，这个oid基本都和cid相同</li> <li>aid：视频id，即av号，2020年3月份全面从av号升级成由数字和字母组成的bv号，但是av号仍保留，在视频页面打开控制台执行<code>window.aid</code>就看到了，找接口也可以</li></ul> <h2 id="弹幕"><a href="#弹幕" class="header-anchor">#</a> 弹幕</h2> <h3 id="获取弹幕"><a href="#获取弹幕" class="header-anchor">#</a> 获取弹幕</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/v1/dm/list.so?oid=175812698</code>，这个oid每个视频不同</li></ul> <p><strong>请求方法</strong></p> <ul><li>GET</li></ul> <p><strong>请求参数</strong></p> <ul><li>只有一个get参数oid</li></ul> <p><strong>请求响应</strong>
+返回一个xml文件，chrome的开发者控制台无法看到内容，单独打开链接可以看到（火狐浏览器的开发者控制台也能直接看到），xml文件内容弹幕格式如下：</p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm2/model/dm.go-32行</span>
+<span class="token comment">// &lt;d p=&quot;播放时间，弹幕模式，字体大小，颜色，发送时间，弹幕池，用户hash，弹幕id&quot;&gt;弹幕内容&lt;/d&gt;</span>
+_xmlFmt <span class="token operator">=</span> <span class="token string">`&lt;d p=&quot;%.5f,%d,%d,%d,%d,%d,%s,%d&quot;&gt;%s&lt;/d&gt;`</span>
+<span class="token comment">// &lt;d p=&quot;播放时间，弹幕模式，字体大小，颜色，发送时间，弹幕池，用户hash，弹幕id，用户id&quot;&gt;弹幕内容&lt;/d&gt;</span>
+_rnameFmt <span class="token operator">=</span> <span class="token string">`&lt;d p=&quot;%.5f,%d,%d,%d,%d,%d,%s,%d,%d&quot;&gt;%s&lt;/d&gt;`</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm2/http/http.go——56行</span>
+e<span class="token punctuation">.</span><span class="token function">GET</span><span class="token punctuation">(</span><span class="token string">&quot;/x/v1/dm/list.so&quot;</span><span class="token punctuation">,</span> dmXML<span class="token punctuation">)</span>
+</code></pre></div><p><strong>获取弹幕核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm2/service/dm.go-75行</span>
+idxMap<span class="token punctuation">,</span> dmids<span class="token punctuation">,</span> spedmids<span class="token punctuation">,</span> err <span class="token operator">:=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Indexs</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> tp<span class="token punctuation">,</span> oid<span class="token punctuation">)</span>
+<span class="token comment">// ...</span>
+contents<span class="token punctuation">,</span> err <span class="token operator">:=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Contents</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> oid<span class="token punctuation">,</span> dmids<span class="token punctuation">)</span>
+</code></pre></div><p><strong>其他说明</strong></p> <ul><li>这个接口有弄缓存</li></ul> <h3 id="发送弹幕"><a href="#发送弹幕" class="header-anchor">#</a> 发送弹幕</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/v2/dm/post</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;type&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;oid&quot;</span><span class="token operator">:</span> <span class="token string">&quot;176228421&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;msg&quot;</span><span class="token operator">:</span> <span class="token string">&quot;%E6%9D%A5%E4%BA%86%E6%9D%A5%E4%BA%86&quot;</span><span class="token punctuation">,</span>  <span class="token comment">// 弹幕内容，需要urlencode，这里是&quot;来了来了&quot;</span>
+    <span class="token string">&quot;bvid&quot;</span><span class="token operator">:</span> <span class="token string">&quot;BV1AZ4y1x7cD&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;progress&quot;</span><span class="token operator">:</span> <span class="token string">&quot;128559&quot;</span><span class="token punctuation">,</span> <span class="token comment">// 视频时间，单位是毫秒，这里表示在视频2分08秒处发了一条弹幕</span>
+    <span class="token string">&quot;color&quot;</span><span class="token operator">:</span> <span class="token string">&quot;16777215&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;fontsize&quot;</span><span class="token operator">:</span> <span class="token string">&quot;25&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;pool&quot;</span><span class="token operator">:</span> <span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;mode&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;rnd&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1586481270927467&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;plat&quot;</span><span class="token operator">:</span> <span class="token string">&quot;1&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;csrf&quot;</span><span class="token operator">:</span> <span class="token string">&quot;54842bd0190eac3e78e2a8fff25062b4&quot;</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span> 
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span> <span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span> 
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> 
+    <span class="token string">&quot;data&quot;</span><span class="token operator">:</span> <span class="token punctuation">{</span>
+        <span class="token string">&quot;action&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span> 
+        <span class="token string">&quot;dmid&quot;</span><span class="token operator">:</span> <span class="token number">31110914963931141</span><span class="token punctuation">,</span> 
+        <span class="token string">&quot;dmid_str&quot;</span><span class="token operator">:</span> <span class="token string">&quot;31110914963931141&quot;</span><span class="token punctuation">,</span> 
+        <span class="token string">&quot;visible&quot;</span><span class="token operator">:</span> <span class="token boolean">true</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm2/http/http.go——72行</span>
+group<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span><span class="token string">&quot;/post&quot;</span><span class="token punctuation">,</span> authSvc<span class="token punctuation">.</span>User<span class="token punctuation">,</span> dmPost<span class="token punctuation">)</span>
+</code></pre></div><p><strong>发送弹幕核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm2/http/dm.go——298行：调用弹幕rpc创建弹幕</span>
+<span class="token keyword">if</span> err <span class="token operator">=</span> dmSvc<span class="token punctuation">.</span><span class="token function">Post</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> dm<span class="token punctuation">,</span> aid<span class="token punctuation">,</span> rnd<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span>
+
+<span class="token comment">// app/interface/main/dm2/service/dmpost.go——35行：创建弹幕的方法，做了大量的数据校验，弹幕数据异步入库(发到databus)，记录行为日志，弹幕广播</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">Post</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> dm <span class="token operator">*</span>model<span class="token punctuation">.</span>DM<span class="token punctuation">,</span> aid<span class="token punctuation">,</span> rnd <span class="token builtin">int64</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span><span class="token operator">...</span><span class="token punctuation">}</span>
+</code></pre></div><h3 id="举报弹幕"><a href="#举报弹幕" class="header-anchor">#</a> 举报弹幕</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/dm/report/add</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;cid&quot;</span><span class="token operator">:</span> <span class="token string">&quot;174567735&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;dmid&quot;</span><span class="token operator">:</span> <span class="token string">&quot;31154252926681093&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;reason&quot;</span><span class="token operator">:</span> <span class="token string">&quot;10&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;content&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;jsonp&quot;</span><span class="token operator">:</span> <span class="token string">&quot;jsonp&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;csrf&quot;</span><span class="token operator">:</span> <span class="token string">&quot;54842bd0190eac3e78e2a8fff25062b4&quot;</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span> <span class="token string">&quot;&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm/http/http.go——62行</span>
+group<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span><span class="token string">&quot;/report/add&quot;</span><span class="token punctuation">,</span> authSvc<span class="token punctuation">.</span>User<span class="token punctuation">,</span> addReport<span class="token punctuation">)</span>
+</code></pre></div><p><strong>举报弹幕核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// app/interface/main/dm/http/report.go——46行：调用弹幕服务添加举报记录</span>
+<span class="token keyword">if</span> <span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">=</span> dmSvc<span class="token punctuation">.</span><span class="token function">AddReport</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> cid<span class="token punctuation">,</span> dmid<span class="token punctuation">,</span> mid<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token builtin">int64</span><span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">int8</span><span class="token punctuation">(</span>reason<span class="token punctuation">)</span><span class="token punctuation">,</span> content<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+  log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;dmSvc.AddReport(cid:%d, dmid:%d, mid:%v) error(%v)&quot;</span><span class="token punctuation">,</span> cid<span class="token punctuation">,</span> dmid<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+  c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+  <span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="关注与粉丝"><a href="#关注与粉丝" class="header-anchor">#</a> 关注与粉丝</h2> <h3 id="粉丝列表"><a href="#粉丝列表" class="header-anchor">#</a> 粉丝列表</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/relation/followers</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>GET</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  vmid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  pn<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  ps<span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+  order<span class="token operator">:</span> <span class="token string">'desc'</span><span class="token punctuation">,</span>
+  jsonp<span class="token operator">:</span> <span class="token string">'jsonp'</span><span class="token punctuation">,</span>
+  callback<span class="token operator">:</span> <span class="token string">'__jp7'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">&quot;list&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span>
+                <span class="token string">&quot;mid&quot;</span><span class="token operator">:</span><span class="token number">11084729</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;attribute&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;mtime&quot;</span><span class="token operator">:</span><span class="token number">1594046826</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;tag&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;special&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;uname&quot;</span><span class="token operator">:</span><span class="token string">&quot;臭包丶&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;face&quot;</span><span class="token operator">:</span><span class="token string">&quot;http://i2.hdslb.com/bfs/face/c21e4fb4d44e033d7d15283057aa2021e5d0bfb7.jpg&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sign&quot;</span><span class="token operator">:</span><span class="token string">&quot;什么都学的贪心程序员&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;official_verify&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;type&quot;</span><span class="token operator">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;desc&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;vip&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;vipType&quot;</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipDueDate&quot;</span><span class="token operator">:</span><span class="token number">1644163200000</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;dueRemark&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;accessStatus&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatus&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatusWarn&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;themeType&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;label&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                        <span class="token string">&quot;path&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;re_version&quot;</span><span class="token operator">:</span><span class="token number">2771276223</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;total&quot;</span><span class="token operator">:</span><span class="token number">1</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// relation</span>
+relationG <span class="token operator">:=</span> e<span class="token punctuation">.</span><span class="token function">Group</span><span class="token punctuation">(</span><span class="token string">&quot;/x/relation&quot;</span><span class="token punctuation">,</span> bm<span class="token punctuation">.</span><span class="token function">CSRF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">...</span>
+<span class="token comment">// app/interface/main/account/http/http.go——246行</span>
+relationG<span class="token punctuation">.</span><span class="token function">GET</span><span class="token punctuation">(</span><span class="token string">&quot;/followers&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>Guest<span class="token punctuation">,</span> followers<span class="token punctuation">)</span>
+</code></pre></div><p><strong>粉丝列表核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// 接口代码</span>
+<span class="token comment">// app/interface/main/account/http/relation.go——242行</span>
+
+<span class="token comment">// followers get user's follower list.</span>
+<span class="token keyword">func</span> <span class="token function">followers</span><span class="token punctuation">(</span>c <span class="token operator">*</span>bm<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">if</span> fs<span class="token punctuation">,</span> crc32v<span class="token punctuation">,</span> total<span class="token punctuation">,</span> err <span class="token operator">=</span> relationSvc<span class="token punctuation">.</span><span class="token function">Followers</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> vmid<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> pn<span class="token punctuation">,</span> ps<span class="token punctuation">,</span> version<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;relationSvc.Followers(%d) error(%v)&quot;</span><span class="token punctuation">,</span> mid<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token keyword">interface</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">{</span>
+		<span class="token string">&quot;re_version&quot;</span><span class="token punctuation">:</span> <span class="token function">uint64</span><span class="token punctuation">(</span>crc32v<span class="token punctuation">)</span><span class="token punctuation">,</span>
+		<span class="token string">&quot;list&quot;</span><span class="token punctuation">:</span>       fs<span class="token punctuation">,</span>
+		<span class="token string">&quot;total&quot;</span><span class="token punctuation">:</span>      total<span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// rpc代码</span>
+<span class="token comment">// app/interface/main/account/service/relation/relation.go——380行</span>
+
+<span class="token comment">// Followers get user followings.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">Followers</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> vmid<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> pn<span class="token punctuation">,</span> ps <span class="token builtin">int64</span><span class="token punctuation">,</span> version <span class="token builtin">uint64</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>f <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">*</span>model<span class="token punctuation">.</span>Following<span class="token punctuation">,</span> crc32v <span class="token builtin">uint32</span><span class="token punctuation">,</span> total <span class="token builtin">int</span><span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">var</span> <span class="token punctuation">(</span>
+		mids  <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int64</span>
+		cards <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int64</span><span class="token punctuation">]</span><span class="token operator">*</span>acml<span class="token punctuation">.</span>Card
+		fi    <span class="token operator">*</span>mrl<span class="token punctuation">.</span>Following
+		ip    <span class="token operator">=</span> metadata<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> metadata<span class="token punctuation">.</span>RemoteIP<span class="token punctuation">)</span>
+	<span class="token punctuation">)</span>
+	arg <span class="token operator">:=</span> <span class="token operator">&amp;</span>mrl<span class="token punctuation">.</span>ArgMid<span class="token punctuation">{</span>Mid<span class="token punctuation">:</span> vmid<span class="token punctuation">,</span> RealIP<span class="token punctuation">:</span> ip<span class="token punctuation">}</span>
+	fr<span class="token punctuation">,</span> err <span class="token operator">:=</span> s<span class="token punctuation">.</span>relationRPC<span class="token punctuation">.</span><span class="token function">Followers</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> arg<span class="token punctuation">)</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// app/service/main/relation/service/follower.go——18行</span>
+<span class="token comment">// Followers get follower list.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">Followers</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> mid <span class="token builtin">int64</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>fs <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">*</span>model<span class="token punctuation">.</span>Following<span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> mid <span class="token operator">&lt;=</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">var</span> mc <span class="token operator">=</span> <span class="token boolean">true</span>
+
+	prom<span class="token punctuation">.</span>CacheHit<span class="token punctuation">.</span><span class="token function">Incr</span><span class="token punctuation">(</span><span class="token string">&quot;followers&quot;</span><span class="token punctuation">)</span>
+	<span class="token keyword">if</span> fs<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">FollowerCache</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		err <span class="token operator">=</span> <span class="token boolean">nil</span>
+		mc <span class="token operator">=</span> <span class="token boolean">false</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> fs <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	prom<span class="token punctuation">.</span>CacheMiss<span class="token punctuation">.</span><span class="token function">Incr</span><span class="token punctuation">(</span><span class="token string">&quot;followers&quot;</span><span class="token punctuation">)</span>
+
+	<span class="token keyword">if</span> fs<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Followers</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token function">len</span><span class="token punctuation">(</span>fs<span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token number">0</span> <span class="token punctuation">{</span>
+		fs <span class="token operator">=</span> _emptyFollowings
+	<span class="token punctuation">}</span>
+	<span class="token keyword">if</span> mc <span class="token punctuation">{</span>
+		s<span class="token punctuation">.</span><span class="token function">addCache</span><span class="token punctuation">(</span><span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+			s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">SetFollowerCache</span><span class="token punctuation">(</span>context<span class="token punctuation">.</span><span class="token function">TODO</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fs<span class="token punctuation">)</span>
+		<span class="token punctuation">}</span><span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="我的关注"><a href="#我的关注" class="header-anchor">#</a> 我的关注</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/relation/followings</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>GET</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  vmid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  pn<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  ps<span class="token operator">:</span> <span class="token number">20</span><span class="token punctuation">,</span>
+  order<span class="token operator">:</span> <span class="token string">'desc'</span><span class="token punctuation">,</span>
+  jsonp<span class="token operator">:</span> <span class="token string">'jsonp'</span><span class="token punctuation">,</span>
+  callback<span class="token operator">:</span> <span class="token string">'__jp7'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">&quot;list&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span>
+            <span class="token punctuation">{</span>
+                <span class="token string">&quot;mid&quot;</span><span class="token operator">:</span><span class="token number">37663924</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;attribute&quot;</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;mtime&quot;</span><span class="token operator">:</span><span class="token number">1594040314</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;tag&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;special&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;uname&quot;</span><span class="token operator">:</span><span class="token string">&quot;硬核的半佛仙人&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;face&quot;</span><span class="token operator">:</span><span class="token string">&quot;http://i1.hdslb.com/bfs/face/aaf33dced1941af0946f37c62f4b48fcaba9c9a2.jpg&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sign&quot;</span><span class="token operator">:</span><span class="token string">&quot;喜欢小仙女&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;official_verify&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;type&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;desc&quot;</span><span class="token operator">:</span><span class="token string">&quot;bilibili 知名科技UP主、高能联盟成员&quot;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;vip&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;vipType&quot;</span><span class="token operator">:</span><span class="token number">2</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipDueDate&quot;</span><span class="token operator">:</span><span class="token number">1641052800000</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;dueRemark&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;accessStatus&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatus&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatusWarn&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;themeType&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;label&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                        <span class="token string">&quot;path&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span><span class="token operator">...</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;re_version&quot;</span><span class="token operator">:</span><span class="token number">4209253951</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;total&quot;</span><span class="token operator">:</span><span class="token number">56</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// relation</span>
+relationG <span class="token operator">:=</span> e<span class="token punctuation">.</span><span class="token function">Group</span><span class="token punctuation">(</span><span class="token string">&quot;/x/relation&quot;</span><span class="token punctuation">,</span> bm<span class="token punctuation">.</span><span class="token function">CSRF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">...</span>
+<span class="token comment">// app/interface/main/account/http/http.go——244行</span>
+relationG<span class="token punctuation">.</span><span class="token function">GET</span><span class="token punctuation">(</span><span class="token string">&quot;/followings&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>Guest<span class="token punctuation">,</span> followings<span class="token punctuation">)</span>
+relationG<span class="token punctuation">.</span><span class="token function">GET</span><span class="token punctuation">(</span><span class="token string">&quot;/same/followings&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>User<span class="token punctuation">,</span> sameFollowings<span class="token punctuation">)</span>
+</code></pre></div><p><strong>我的关注核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// 接口代码</span>
+<span class="token comment">// app/interface/main/account/http/relation.go——170行</span>
+<span class="token comment">// followings get user's following list.</span>
+<span class="token keyword">func</span> <span class="token function">followings</span><span class="token punctuation">(</span>c <span class="token operator">*</span>bm<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">if</span> followings<span class="token punctuation">,</span> crc32v<span class="token punctuation">,</span> total<span class="token punctuation">,</span> err <span class="token operator">=</span> relationSvc<span class="token punctuation">.</span><span class="token function">Followings</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> vmid<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> pn<span class="token punctuation">,</span> ps<span class="token punctuation">,</span> version<span class="token punctuation">,</span> order<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;relationSvc.Followings(%d) error(%v)&quot;</span><span class="token punctuation">,</span> vmid<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token keyword">interface</span><span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">{</span>
+		<span class="token string">&quot;re_version&quot;</span><span class="token punctuation">:</span> <span class="token function">uint64</span><span class="token punctuation">(</span>crc32v<span class="token punctuation">)</span><span class="token punctuation">,</span>
+		<span class="token string">&quot;list&quot;</span><span class="token punctuation">:</span>       followings<span class="token punctuation">,</span>
+		<span class="token string">&quot;total&quot;</span><span class="token punctuation">:</span>      total<span class="token punctuation">,</span>
+	<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">nil</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// rpc代码</span>
+<span class="token comment">// app/interface/main/account/service/relation/relation.go——474行</span>
+<span class="token comment">// Followings get user followings list.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">Followings</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> vmid<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> pn<span class="token punctuation">,</span> ps <span class="token builtin">int64</span><span class="token punctuation">,</span> version <span class="token builtin">uint64</span><span class="token punctuation">,</span> order <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>f <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token operator">*</span>model<span class="token punctuation">.</span>Following<span class="token punctuation">,</span> crc32v <span class="token builtin">uint32</span><span class="token punctuation">,</span> total <span class="token builtin">int</span><span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">var</span> <span class="token punctuation">(</span>
+		mids  <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token builtin">int64</span>
+		cards <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">int64</span><span class="token punctuation">]</span><span class="token operator">*</span>acml<span class="token punctuation">.</span>Card
+		fi    <span class="token operator">*</span>mrl<span class="token punctuation">.</span>Following
+		ip    <span class="token operator">=</span> metadata<span class="token punctuation">.</span><span class="token function">String</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> metadata<span class="token punctuation">.</span>RemoteIP<span class="token punctuation">)</span>
+	<span class="token punctuation">)</span>
+	arg <span class="token operator">:=</span> <span class="token operator">&amp;</span>mrl<span class="token punctuation">.</span>ArgMid<span class="token punctuation">{</span>Mid<span class="token punctuation">:</span> vmid<span class="token punctuation">,</span> RealIP<span class="token punctuation">:</span> ip<span class="token punctuation">}</span>
+  fr<span class="token punctuation">,</span> err <span class="token operator">:=</span> s<span class="token punctuation">.</span>relationRPC<span class="token punctuation">.</span><span class="token function">Followings</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> arg<span class="token punctuation">)</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="关注别人"><a href="#关注别人" class="header-anchor">#</a> 关注别人</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/relation/modify</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  fid<span class="token operator">:</span> <span class="token number">777536</span><span class="token punctuation">,</span>
+  act<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  re_src<span class="token operator">:</span> <span class="token number">14</span><span class="token punctuation">,</span>
+  cross_domain<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  csrf<span class="token operator">:</span> <span class="token string">'0b28f121acf768ece690aa9eae7a6efb'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// relation</span>
+relationG <span class="token operator">:=</span> e<span class="token punctuation">.</span><span class="token function">Group</span><span class="token punctuation">(</span><span class="token string">&quot;/x/relation&quot;</span><span class="token punctuation">,</span> bm<span class="token punctuation">.</span><span class="token function">CSRF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">...</span>
+<span class="token comment">// app/interface/main/account/http/http.go——242行</span>
+relationG<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span><span class="token string">&quot;/modify&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>User<span class="token punctuation">,</span> anti<span class="token punctuation">.</span>ServeHTTP<span class="token punctuation">,</span> modify<span class="token punctuation">)</span>
+</code></pre></div><p><strong>关注别人核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// 接口代码</span>
+<span class="token comment">// app/interface/main/account/http/relation.go——20行</span>
+<span class="token comment">// modify modify user relation.</span>
+<span class="token keyword">func</span> <span class="token function">modify</span><span class="token punctuation">(</span>c <span class="token operator">*</span>bm<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+	ric <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+		<span class="token string">&quot;ip&quot;</span><span class="token punctuation">:</span>         realIP<span class="token punctuation">,</span>
+		<span class="token string">&quot;User-Agent&quot;</span><span class="token punctuation">:</span> ua<span class="token punctuation">,</span>
+		<span class="token string">&quot;sid&quot;</span><span class="token punctuation">:</span>        sid<span class="token punctuation">,</span>
+		<span class="token string">&quot;buvid&quot;</span><span class="token punctuation">:</span>      buvid<span class="token punctuation">,</span>
+		<span class="token string">&quot;Referer&quot;</span><span class="token punctuation">:</span>    referer<span class="token punctuation">,</span>
+	<span class="token punctuation">}</span>
+  c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> relationSvc<span class="token punctuation">.</span><span class="token function">Modify</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token builtin">int64</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fid<span class="token punctuation">,</span> <span class="token function">int8</span><span class="token punctuation">(</span>act<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">uint8</span><span class="token punctuation">(</span>src<span class="token punctuation">)</span><span class="token punctuation">,</span> ric<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// rpc代码</span>
+<span class="token comment">// app/service/main/relation/service/following.go——101行</span>
+<span class="token comment">// AddFollowing add following.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">AddFollowing</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid <span class="token builtin">int64</span><span class="token punctuation">,</span> src <span class="token builtin">uint8</span><span class="token punctuation">,</span> ric <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">if</span> tx<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">BeginTran</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">defer</span> <span class="token keyword">func</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+		<span class="token keyword">if</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+			<span class="token keyword">if</span> err1 <span class="token operator">:=</span> tx<span class="token punctuation">.</span><span class="token function">Rollback</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err1 <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+				log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;tx.Rollback() error(%v)&quot;</span><span class="token punctuation">,</span> err1<span class="token punctuation">)</span>
+			<span class="token punctuation">}</span>
+			<span class="token keyword">return</span>
+		<span class="token punctuation">}</span>
+		<span class="token keyword">if</span> err <span class="token operator">=</span> tx<span class="token punctuation">.</span><span class="token function">Commit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+			log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;tx.Commit() error(%v)&quot;</span><span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+		<span class="token punctuation">}</span>
+	<span class="token punctuation">}</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">if</span> a<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Relation</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">if</span> ra<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Relation</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> fid<span class="token punctuation">,</span> mid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="关注时加入默认分组"><a href="#关注时加入默认分组" class="header-anchor">#</a> 关注时加入默认分组</h3> <p>关注分组实质上是打tag
+<strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/relation/tags/addUsers</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  fids<span class="token operator">:</span> <span class="token number">777536</span><span class="token punctuation">,</span>
+  tagids<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  csrf<span class="token operator">:</span> <span class="token string">'0b28f121acf768ece690aa9eae7a6efb'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// relation</span>
+relationG <span class="token operator">:=</span> e<span class="token punctuation">.</span><span class="token function">Group</span><span class="token punctuation">(</span><span class="token string">&quot;/x/relation&quot;</span><span class="token punctuation">,</span> bm<span class="token punctuation">.</span><span class="token function">CSRF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">...</span>
+<span class="token comment">// app/interface/main/account/http/http.go——264行</span>
+relationG<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span><span class="token string">&quot;/tags/addUsers&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>User<span class="token punctuation">,</span> tagsAddUsers<span class="token punctuation">)</span>
+</code></pre></div><p><strong>关注加入默认分组核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// 接口代码</span>
+<span class="token comment">// app/interface/main/account/http/relation.go——650行</span>
+<span class="token comment">// tagsAddUsers tags add users.</span>
+<span class="token keyword">func</span> <span class="token function">tagsAddUsers</span><span class="token punctuation">(</span>c <span class="token operator">*</span>bm<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">var</span> <span class="token punctuation">(</span>
+		mid<span class="token punctuation">,</span> <span class="token boolean">_</span>    <span class="token operator">=</span> c<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span><span class="token string">&quot;mid&quot;</span><span class="token punctuation">)</span>
+		params    <span class="token operator">=</span> c<span class="token punctuation">.</span>Request<span class="token punctuation">.</span>Form
+		tagidsStr <span class="token operator">=</span> params<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span><span class="token string">&quot;tagids&quot;</span><span class="token punctuation">)</span>
+		fidsStr   <span class="token operator">=</span> params<span class="token punctuation">.</span><span class="token function">Get</span><span class="token punctuation">(</span><span class="token string">&quot;fids&quot;</span><span class="token punctuation">)</span>
+	<span class="token punctuation">)</span>
+	<span class="token keyword">if</span> tagidsStr <span class="token operator">==</span> <span class="token string">&quot;&quot;</span> <span class="token operator">||</span> fidsStr <span class="token operator">==</span> <span class="token string">&quot;&quot;</span> <span class="token punctuation">{</span>
+		c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> ecode<span class="token punctuation">.</span>RequestErr<span class="token punctuation">)</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> relationSvc<span class="token punctuation">.</span><span class="token function">TagsAddUsers</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token builtin">int64</span><span class="token punctuation">)</span><span class="token punctuation">,</span> tagidsStr<span class="token punctuation">,</span> fidsStr<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// rpc代码</span>
+<span class="token comment">// app/service/main/relation/service/tag.go——352行</span>
+<span class="token comment">// TagsAddUsers add user to tidStr.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">TagsAddUsers</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> mid <span class="token builtin">int64</span><span class="token punctuation">,</span> tidStr<span class="token punctuation">,</span> fidStr <span class="token builtin">string</span><span class="token punctuation">,</span> ip <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+	<span class="token keyword">for</span> <span class="token boolean">_</span><span class="token punctuation">,</span> fid <span class="token operator">:=</span> <span class="token keyword">range</span> fids <span class="token punctuation">{</span>
+		<span class="token boolean">_</span><span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">AddTagUser</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid<span class="token punctuation">,</span> tmpTids<span class="token punctuation">,</span> time<span class="token punctuation">.</span><span class="token function">Now</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="取消关注"><a href="#取消关注" class="header-anchor">#</a> 取消关注</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/relation/modify</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  fid<span class="token operator">:</span> <span class="token number">777536</span><span class="token punctuation">,</span>
+  act<span class="token operator">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+  re_src<span class="token operator">:</span> <span class="token number">14</span><span class="token punctuation">,</span>
+  cross_domain<span class="token operator">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+  csrf<span class="token operator">:</span> <span class="token string">'0b28f121acf768ece690aa9eae7a6efb'</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// relation</span>
+relationG <span class="token operator">:=</span> e<span class="token punctuation">.</span><span class="token function">Group</span><span class="token punctuation">(</span><span class="token string">&quot;/x/relation&quot;</span><span class="token punctuation">,</span> bm<span class="token punctuation">.</span><span class="token function">CSRF</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token operator">...</span>
+<span class="token comment">// app/interface/main/account/http/http.go——242行</span>
+relationG<span class="token punctuation">.</span><span class="token function">POST</span><span class="token punctuation">(</span><span class="token string">&quot;/modify&quot;</span><span class="token punctuation">,</span> authn<span class="token punctuation">.</span>User<span class="token punctuation">,</span> anti<span class="token punctuation">.</span>ServeHTTP<span class="token punctuation">,</span> modify<span class="token punctuation">)</span>
+</code></pre></div><p><strong>取消关注核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code><span class="token comment">// 接口代码</span>
+<span class="token comment">// app/interface/main/account/http/relation.go——20行</span>
+<span class="token comment">// modify modify user relation.</span>
+<span class="token keyword">func</span> <span class="token function">modify</span><span class="token punctuation">(</span>c <span class="token operator">*</span>bm<span class="token punctuation">.</span>Context<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+	ric <span class="token operator">:=</span> <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">{</span>
+		<span class="token string">&quot;ip&quot;</span><span class="token punctuation">:</span>         realIP<span class="token punctuation">,</span>
+		<span class="token string">&quot;User-Agent&quot;</span><span class="token punctuation">:</span> ua<span class="token punctuation">,</span>
+		<span class="token string">&quot;sid&quot;</span><span class="token punctuation">:</span>        sid<span class="token punctuation">,</span>
+		<span class="token string">&quot;buvid&quot;</span><span class="token punctuation">:</span>      buvid<span class="token punctuation">,</span>
+		<span class="token string">&quot;Referer&quot;</span><span class="token punctuation">:</span>    referer<span class="token punctuation">,</span>
+	<span class="token punctuation">}</span>
+  c<span class="token punctuation">.</span><span class="token function">JSON</span><span class="token punctuation">(</span><span class="token boolean">nil</span><span class="token punctuation">,</span> relationSvc<span class="token punctuation">.</span><span class="token function">Modify</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">.</span><span class="token punctuation">(</span><span class="token builtin">int64</span><span class="token punctuation">)</span><span class="token punctuation">,</span> fid<span class="token punctuation">,</span> <span class="token function">int8</span><span class="token punctuation">(</span>act<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">uint8</span><span class="token punctuation">(</span>src<span class="token punctuation">)</span><span class="token punctuation">,</span> ric<span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// rpc代码</span>
+<span class="token comment">// app/interface/main/account/service/relation/relation.go——60行</span>
+<span class="token comment">// Modify modify user relation.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">Modify</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid <span class="token builtin">int64</span><span class="token punctuation">,</span> act <span class="token builtin">int8</span><span class="token punctuation">,</span> src <span class="token builtin">uint8</span><span class="token punctuation">,</span> ric <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	<span class="token keyword">if</span> act <span class="token operator">&lt;</span> mrl<span class="token punctuation">.</span>ActAddFollowing <span class="token operator">||</span> act <span class="token operator">&gt;</span> mrl<span class="token punctuation">.</span>ActDelFollower <span class="token punctuation">{</span>
+		err <span class="token operator">=</span> ecode<span class="token punctuation">.</span>RequestErr
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	arg <span class="token operator">:=</span> <span class="token operator">&amp;</span>mrl<span class="token punctuation">.</span>ArgFollowing<span class="token punctuation">{</span>Mid<span class="token punctuation">:</span> mid<span class="token punctuation">,</span> Fid<span class="token punctuation">:</span> fid<span class="token punctuation">,</span> Source<span class="token punctuation">:</span> src<span class="token punctuation">,</span> Action<span class="token punctuation">:</span> act<span class="token punctuation">,</span> Infoc<span class="token punctuation">:</span> ric<span class="token punctuation">}</span>
+	<span class="token keyword">if</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>relationRPC<span class="token punctuation">.</span><span class="token function">ModifyRelation</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		log<span class="token punctuation">.</span><span class="token function">Error</span><span class="token punctuation">(</span><span class="token string">&quot;s.relationRPC.ModifyRelation(mid:%d,fid:%d,src:%d,act:%d) err(%v)&quot;</span><span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid<span class="token punctuation">,</span> act<span class="token punctuation">,</span> src<span class="token punctuation">,</span> err<span class="token punctuation">)</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// app/service/main/relation/service/following.go——278行</span>
+<span class="token comment">// DelFollowing del following.</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>s <span class="token operator">*</span>Service<span class="token punctuation">)</span> <span class="token function">DelFollowing</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid <span class="token builtin">int64</span><span class="token punctuation">,</span> src <span class="token builtin">uint8</span><span class="token punctuation">,</span> ric <span class="token keyword">map</span><span class="token punctuation">[</span><span class="token builtin">string</span><span class="token punctuation">]</span><span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment">// ...</span>
+  <span class="token keyword">if</span> tx<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">BeginTran</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// ... 下面分别查一下关注表和粉丝表</span>
+  <span class="token keyword">if</span> a<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Relation</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> mid<span class="token punctuation">,</span> fid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+	<span class="token punctuation">}</span>
+	<span class="token keyword">if</span> ra<span class="token punctuation">,</span> err <span class="token operator">=</span> s<span class="token punctuation">.</span>dao<span class="token punctuation">.</span><span class="token function">Relation</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> fid<span class="token punctuation">,</span> mid<span class="token punctuation">)</span><span class="token punctuation">;</span> err <span class="token operator">!=</span> <span class="token boolean">nil</span> <span class="token punctuation">{</span>
+		<span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment">// ...</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h2 id="动态"><a href="#动态" class="header-anchor">#</a> 动态</h2> <h3 id="全部动态"><a href="#全部动态" class="header-anchor">#</a> 全部动态</h3> <p><strong>url</strong></p> <ul><li><code>https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/dynamic_new</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>GET</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code><span class="token comment">// 全部动态</span>
+params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  type_list<span class="token operator">:</span> <span class="token number">268435455</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 投稿视频</span>
+params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  type_list<span class="token operator">:</span> <span class="token number">8</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 追番追剧</span>
+params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  type_list<span class="token operator">:</span> <span class="token number">512</span><span class="token punctuation">,</span><span class="token number">4097</span><span class="token punctuation">,</span><span class="token number">4098</span><span class="token punctuation">,</span><span class="token number">4099</span><span class="token punctuation">,</span><span class="token number">4100</span><span class="token punctuation">,</span><span class="token number">4101</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// 专栏</span>
+params <span class="token operator">=</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  type_list<span class="token operator">:</span> <span class="token number">64</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <p><a href="/source/post/B站源码阅读/请求响应/动态/全部动态.html">全部动态-接口响应</a></p> <p><strong>路由入口代码位置</strong></p> <ul><li>源码中未找到 http 路由...</li> <li>只在<code>app/interface/main/app-feed/dao/dynamic/dao.go</code>中找到了调用另外微服务的代码：</li></ul> <div class="language-go extra-class"><pre class="language-go"><code><span class="token keyword">var</span> <span class="token punctuation">(</span>
+	_dynamicGet     <span class="token operator">=</span> <span class="token string">&quot;/dynamic_svr/v1/dynamic_svr/dynamic_new&quot;</span>
+	_dynamicHistory <span class="token operator">=</span> <span class="token string">&quot;/dynamic_svr/v1/dynamic_svr/dynamic_history&quot;</span>
+<span class="token punctuation">)</span>
+
+<span class="token comment">// ...</span>
+<span class="token comment">// DynamicHistory .</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dao<span class="token punctuation">)</span> <span class="token function">DynamicHistory</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> params <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>res json<span class="token punctuation">.</span>RawMessage<span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	res<span class="token punctuation">,</span> err <span class="token operator">=</span> d<span class="token punctuation">.</span><span class="token function">dynamicSrv</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> _dynamicHistory<span class="token punctuation">,</span> params<span class="token punctuation">)</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// DynamicCount .</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dao<span class="token punctuation">)</span> <span class="token function">DynamicCount</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> params <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>res json<span class="token punctuation">.</span>RawMessage<span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	res<span class="token punctuation">,</span> err <span class="token operator">=</span> d<span class="token punctuation">.</span><span class="token function">dynamicSrv</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> _dynamicGet<span class="token punctuation">,</span> params<span class="token punctuation">)</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment">// DynamicNew .</span>
+<span class="token keyword">func</span> <span class="token punctuation">(</span>d <span class="token operator">*</span>Dao<span class="token punctuation">)</span> <span class="token function">DynamicNew</span><span class="token punctuation">(</span>c context<span class="token punctuation">.</span>Context<span class="token punctuation">,</span> params <span class="token builtin">string</span><span class="token punctuation">)</span> <span class="token punctuation">(</span>res json<span class="token punctuation">.</span>RawMessage<span class="token punctuation">,</span> err <span class="token builtin">error</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+	res<span class="token punctuation">,</span> err <span class="token operator">=</span> d<span class="token punctuation">.</span><span class="token function">dynamicSrv</span><span class="token punctuation">(</span>c<span class="token punctuation">,</span> _dynamicGet<span class="token punctuation">,</span> params<span class="token punctuation">)</span>
+	<span class="token keyword">return</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="发表动态"><a href="#发表动态" class="header-anchor">#</a> 发表动态</h3> <p><strong>url</strong></p> <ul><li><code>https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/create</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  dynamic_id<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  type<span class="token operator">:</span> <span class="token number">4</span><span class="token punctuation">,</span>
+  rid<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  content<span class="token operator">:</span> <span class="token string">&quot;测试&quot;</span><span class="token punctuation">,</span>
+  up_choose_comment<span class="token operator">:</span> <span class="token number">0</span><span class="token punctuation">,</span>
+  extension<span class="token operator">:</span> <span class="token string">'{&quot;emoji_type&quot;:1,&quot;from&quot;:{&quot;emoji_type&quot;:1}}'</span><span class="token punctuation">,</span>
+  at_uids<span class="token operator">:</span> <span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+  ctrl<span class="token operator">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+  csrf_token<span class="token operator">:</span> <span class="token string">&quot;0b28f121acf768ece690aa9eae7a6efb&quot;</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;msg&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">&quot;result&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;errmsg&quot;</span><span class="token operator">:</span><span class="token string">&quot;; Create dynamic:408556741104925140, res:0, result:1; Push create kafka:0; Push create databus:0; Register comment result:0; Add outbox result:1; Send at_msg result:0&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;dynamic_id&quot;</span><span class="token operator">:</span><span class="token number">408556741104925140</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;create_result&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;dynamic_id_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;408556741104925140&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;_gt_&quot;</span><span class="token operator">:</span><span class="token number">0</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="点赞动态"><a href="#点赞动态" class="header-anchor">#</a> 点赞动态</h3> <p><strong>url</strong></p> <ul><li><code>https://api.vc.bilibili.com/dynamic_like/v1/dynamic_like/thumb</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  uid<span class="token operator">:</span> <span class="token number">337095819</span><span class="token punctuation">,</span>
+  dynamic_id<span class="token operator">:</span> <span class="token number">408556741104925140</span><span class="token punctuation">,</span>
+  up<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token comment">// 取消点赞传2</span>
+  csrf_token<span class="token operator">:</span> <span class="token number">0</span>b28f121acf768ece690aa9eae7a6efb
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">&quot;msg&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token string">&quot;_gt_&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre></div><h3 id="回复动态"><a href="#回复动态" class="header-anchor">#</a> 回复动态</h3> <p><strong>url</strong></p> <ul><li><code>https://api.bilibili.com/x/v2/reply/add</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  oid<span class="token operator">:</span> <span class="token number">408556741104925140</span><span class="token punctuation">,</span>
+  type<span class="token operator">:</span> <span class="token number">17</span><span class="token punctuation">,</span>
+  message<span class="token operator">:</span> <span class="token number">666</span><span class="token punctuation">,</span>
+  plat<span class="token operator">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+  jsonp<span class="token operator">:</span> <span class="token string">&quot;jsonp&quot;</span><span class="token punctuation">,</span>
+  csrf<span class="token operator">:</span> <span class="token string">&quot;0b28f121acf768ece690aa9eae7a6efb&quot;</span><span class="token punctuation">,</span>
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;ttl&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+        <span class="token string">&quot;success_action&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;success_toast&quot;</span><span class="token operator">:</span><span class="token string">&quot;发送成功&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;need_captcha&quot;</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;url&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;rpid&quot;</span><span class="token operator">:</span><span class="token number">3135324346</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;rpid_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;3135324346&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;dialog&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;dialog_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;root&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;root_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;parent&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;parent_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+        <span class="token string">&quot;reply&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+            <span class="token string">&quot;rpid&quot;</span><span class="token operator">:</span><span class="token number">3135324346</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;oid&quot;</span><span class="token operator">:</span><span class="token number">408556741104925140</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;type&quot;</span><span class="token operator">:</span><span class="token number">17</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;mid&quot;</span><span class="token operator">:</span><span class="token number">337095819</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;root&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;parent&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;dialog&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;count&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;rcount&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;state&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;fansgrade&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;attr&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;ctime&quot;</span><span class="token operator">:</span><span class="token number">1593963198</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;rpid_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;3135324346&quot;</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;root_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;parent_str&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;like&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;action&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;member&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                <span class="token string">&quot;mid&quot;</span><span class="token operator">:</span><span class="token string">&quot;337095819&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;uname&quot;</span><span class="token operator">:</span><span class="token string">&quot;人短Python&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sex&quot;</span><span class="token operator">:</span><span class="token string">&quot;保密&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;sign&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;avatar&quot;</span><span class="token operator">:</span><span class="token string">&quot;http://i1.hdslb.com/bfs/face/005988215d49a3ef94b23e19f31eead80c9392b2.jpg&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;rank&quot;</span><span class="token operator">:</span><span class="token string">&quot;10000&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;DisplayRank&quot;</span><span class="token operator">:</span><span class="token string">&quot;0&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;level_info&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;current_level&quot;</span><span class="token operator">:</span><span class="token number">3</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;current_min&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;current_exp&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;next_exp&quot;</span><span class="token operator">:</span><span class="token number">0</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;pendant&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;pid&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;image&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;expire&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;image_enhance&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;nameplate&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;nid&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;name&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;image&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;image_small&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;level&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;condition&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;official_verify&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;type&quot;</span><span class="token operator">:</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;desc&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;vip&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;vipType&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipDueDate&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;dueRemark&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;accessStatus&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatus&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;vipStatusWarn&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;themeType&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;label&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                        <span class="token string">&quot;path&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                        <span class="token string">&quot;text&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                        <span class="token string">&quot;label_theme&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;fans_detail&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;following&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;is_followed&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;user_sailing&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                    <span class="token string">&quot;pendant&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;cardbg&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+                    <span class="token string">&quot;cardbg_with_focus&quot;</span><span class="token operator">:</span><span class="token keyword">null</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;content&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                <span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;666&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;plat&quot;</span><span class="token operator">:</span><span class="token number">1</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;device&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;members&quot;</span><span class="token operator">:</span><span class="token punctuation">[</span>
+                <span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;jump_url&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                <span class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;max_line&quot;</span><span class="token operator">:</span><span class="token number">999</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;replies&quot;</span><span class="token operator">:</span><span class="token keyword">null</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;assist&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;folder&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                <span class="token string">&quot;has_folded&quot;</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;is_folded&quot;</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;rule&quot;</span><span class="token operator">:</span><span class="token string">&quot;https://www.bilibili.com/blackboard/foldingreply.html&quot;</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;up_action&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span>
+                <span class="token string">&quot;like&quot;</span><span class="token operator">:</span><span class="token boolean">false</span><span class="token punctuation">,</span>
+                <span class="token string">&quot;reply&quot;</span><span class="token operator">:</span><span class="token boolean">false</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>
+            <span class="token string">&quot;show_follow&quot;</span><span class="token operator">:</span><span class="token boolean">false</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre></div><h3 id="删除动态"><a href="#删除动态" class="header-anchor">#</a> 删除动态</h3> <p><strong>url</strong></p> <ul><li><code>https://api.vc.bilibili.com/dynamic_svr/v1/dynamic_svr/rm_dynamic</code></li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>formData <span class="token operator">=</span> <span class="token punctuation">{</span>
+  dynamic_id<span class="token operator">:</span> <span class="token number">408556741104925140</span><span class="token punctuation">,</span>
+  csrf_token<span class="token operator">:</span> <span class="token number">0</span>b28f121acf768ece690aa9eae7a6efb
+<span class="token punctuation">}</span>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>response <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token string">&quot;code&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">,</span><span class="token string">&quot;msg&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;message&quot;</span><span class="token operator">:</span><span class="token string">&quot;&quot;</span><span class="token punctuation">,</span><span class="token string">&quot;data&quot;</span><span class="token operator">:</span><span class="token punctuation">{</span><span class="token string">&quot;_gt_&quot;</span><span class="token operator">:</span><span class="token number">0</span><span class="token punctuation">}</span><span class="token punctuation">}</span>
+</code></pre></div><h2 id="模板"><a href="#模板" class="header-anchor">#</a> 模板</h2> <h3 id="模板-2"><a href="#模板-2" class="header-anchor">#</a> 模板</h3> <p><strong>url</strong></p> <ul><li>``</li></ul> <p><strong>请求方法</strong></p> <ul><li>POST</li></ul> <p><strong>请求参数</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>
+</code></pre></div><p><strong>请求响应</strong></p> <div class="language-js extra-class"><pre class="language-js"><code>
+</code></pre></div><p><strong>路由入口代码位置</strong></p> <div class="language-go extra-class"><pre class="language-go"><code> 
+</code></pre></div><p><strong>XXXX核心代码</strong></p> <div class="language-go extra-class"><pre class="language-go"><code>  
+</code></pre></div></div> <footer class="page-edit"><!----> <!----></footer> <!----> </main></div><div class="global-ui"></div></div>
+    <script src="/assets/js/app.90430322.js" defer></script><script src="/assets/js/2.1d78d93b.js" defer></script><script src="/assets/js/6.b39537c4.js" defer></script>
+  </body>
+</html>
